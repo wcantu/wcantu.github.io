@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>IDEA BURKE — Game Design & Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --white: #ffffff;
+    --off-white: #fafaf7;
+    --light-gray: #f0ede6;
+    --mid-gray: #a09880;
+    --black: #0f0e0b;
+    --black-soft: #1c1a14;
+    --yellow: #f5c800;
+    --yellow-dark: #c9a200;
+    --yellow-pale: #fdf6cc;
+    --yellow-mid: #f0d84a;
+    --blue: #2563eb;
+    --blue-light: #60a5fa;
+    --blue-pale: #dbeafe;
+    --grid: rgba(15,14,11,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(15,14,11,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: repeating-linear-gradient(90deg, var(--black) 0px, var(--black) 24px, var(--yellow) 24px, var(--yellow) 48px);
+    z-index: 100;
+  }
+
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 68px 20px 48px;
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+  }
+
+  .header-bee {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 22px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .title-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    color: var(--black);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    background: var(--yellow);
+    display: inline-block;
+    padding: 5px 18px;
+    border-radius: 3px;
+  }
+
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.8rem, 4.2vw, 3.1rem);
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    color: var(--black);
+    margin-top: 14px;
+  }
+
+  h1 span { color: var(--yellow-dark); }
+
+  .title-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(0.75rem, 1.6vw, 1rem);
+    color: var(--mid-gray);
+    letter-spacing: 0.22em;
+    margin-top: 12px;
+    text-transform: uppercase;
+  }
+
+  .header-line {
+    width: 240px;
+    height: 4px;
+    background: repeating-linear-gradient(90deg, var(--black) 0px, var(--black) 12px, var(--yellow) 12px, var(--yellow) 24px);
+    margin: 24px auto 0;
+    border-radius: 2px;
+  }
+
+  main {
+    position: relative;
+    z-index: 5;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 64px 24px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 72px;
+  }
+
+  .period-section { position: relative; }
+
+  .period-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .period-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    padding: 6px 14px;
+    border: 2px solid var(--black);
+    border-radius: 3px;
+    color: var(--black);
+    background: var(--yellow);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .period-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: 0.05em;
+  }
+
+  .period-line {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--black) 0px, var(--black) 8px, transparent 8px, transparent 14px);
+    opacity: 0.2;
+  }
+
+  .period-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--blue);
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+    background: var(--blue-pale);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+  }
+
+  .node {
+    position: relative;
+    background: var(--white);
+    border: 2px solid var(--light-gray);
+    border-radius: 10px;
+    padding: 28px 20px 22px;
+    text-decoration: none;
+    color: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--light-gray);
+    transition: border-color 0.22s, box-shadow 0.22s, transform 0.22s;
+    animation: nodeIn 0.5s ease both;
+  }
+
+  .node:hover {
+    border-color: var(--black);
+    box-shadow: 4px 4px 0px var(--yellow);
+    transform: translateY(-4px) translateX(-1px);
+  }
+
+  .node::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--yellow);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .node:hover::before { transform: scaleX(1); }
+
+  .node::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 24px 24px 0;
+    border-color: transparent var(--light-gray) transparent transparent;
+    transition: border-color 0.22s;
+  }
+  .node:hover::after {
+    border-color: transparent var(--yellow) transparent transparent;
+  }
+
+  .node .sweep {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(245,200,0,0.07), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+  .node:hover .sweep { left: 150%; }
+
+  @keyframes nodeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .node-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--yellow-pale);
+    border: 2.5px solid var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: background 0.22s, border-color 0.22s;
+  }
+  .node:hover .node-icon {
+    background: var(--yellow);
+    border-color: var(--black);
+  }
+
+  .node-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+    color: var(--black);
+    line-height: 1.4;
+  }
+
+  .node-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.64rem;
+    color: var(--mid-gray);
+    letter-spacing: 0.1em;
+  }
+
+  .node-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .node-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  .node-placeholder .node-status { color: var(--mid-gray); }
+  .node-placeholder .node-status::before { background: var(--mid-gray); animation: none; }
+  .node-placeholder .node-icon { background: var(--light-gray); border-color: var(--mid-gray); }
+
+  footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 28px 20px;
+    border-top: 3px solid var(--black);
+    background: var(--black);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--mid-gray);
+    letter-spacing: 0.15em;
+  }
+  footer span { color: var(--yellow); }
+
+  .nodes-grid .node:nth-child(1)  { animation-delay: 0.05s; }
+  .nodes-grid .node:nth-child(2)  { animation-delay: 0.10s; }
+  .nodes-grid .node:nth-child(3)  { animation-delay: 0.15s; }
+  .nodes-grid .node:nth-child(4)  { animation-delay: 0.20s; }
+  .nodes-grid .node:nth-child(5)  { animation-delay: 0.25s; }
+  .nodes-grid .node:nth-child(6)  { animation-delay: 0.30s; }
+  .nodes-grid .node:nth-child(7)  { animation-delay: 0.35s; }
+  .nodes-grid .node:nth-child(8)  { animation-delay: 0.40s; }
+
+  @media (max-width: 600px) {
+    .nodes-grid { grid-template-columns: repeat(2, 1fr); }
+    .period-title { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="header-bee" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="IDEA Burke Bee">
+    <ellipse cx="40" cy="44" rx="14" ry="20" fill="#f5c800" stroke="#0f0e0b" stroke-width="1.5"/>
+    <rect x="27" y="38" width="26" height="5" rx="2.5" fill="#0f0e0b" opacity="0.9"/>
+    <rect x="27" y="48" width="26" height="5" rx="2.5" fill="#0f0e0b" opacity="0.9"/>
+    <ellipse cx="40" cy="24" rx="10" ry="9" fill="#f5c800" stroke="#0f0e0b" stroke-width="1.5"/>
+    <ellipse cx="20" cy="30" rx="12" ry="7" fill="rgba(245,200,0,0.25)" stroke="#0f0e0b" stroke-width="1.5" transform="rotate(-20 20 30)"/>
+    <ellipse cx="60" cy="30" rx="12" ry="7" fill="rgba(245,200,0,0.25)" stroke="#0f0e0b" stroke-width="1.5" transform="rotate(20 60 30)"/>
+    <circle cx="36" cy="22" r="2.5" fill="#0f0e0b"/>
+    <circle cx="44" cy="22" r="2.5" fill="#0f0e0b"/>
+    <line x1="36" y1="16" x2="30" y2="8" stroke="#0f0e0b" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="44" y1="16" x2="50" y2="8" stroke="#0f0e0b" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="30" cy="8" r="2" fill="#0f0e0b"/>
+    <circle cx="50" cy="8" r="2" fill="#0f0e0b"/>
+    <polygon points="40,63 37,68 43,68" fill="#0f0e0b" opacity="0.9"/>
+  </svg>
+
+  <div class="title-eyebrow">IDEA Public Schools · Burke College Prep</div>
+  <h1>Game Design &amp;<br/><span>Programming</span></h1>
+  <div class="title-sub">Final Project Showcase</div>
+  <div class="header-line"></div>
+</header>
+
+<main>
+  <section class="period-section">
+    <div class="period-header">
+      <div class="period-badge">Period</div>
+      <div class="period-title">2nd Period</div>
+      <div class="period-line"></div>
+      <div class="period-count">8 Groups</div>
+    </div>
+    <div class="nodes-grid" id="period2"></div>
+  </section>
+
+  <section class="period-section">
+    <div class="period-header">
+      <div class="period-badge">Period</div>
+      <div class="period-title">6th Period</div>
+      <div class="period-line"></div>
+      <div class="period-count">6 Groups</div>
+    </div>
+    <div class="nodes-grid" id="period6"></div>
+  </section>
+
+  <section class="period-section">
+    <div class="period-header">
+      <div class="period-badge">Period</div>
+      <div class="period-title">7th Period</div>
+      <div class="period-line"></div>
+      <div class="period-count">8 Groups</div>
+    </div>
+    <div class="nodes-grid" id="period7"></div>
+  </section>
+</main>
+
+<footer>
+  <span>IDEA BURKE</span> · Game Design &amp; Programming · Final Project Showcase
+</footer>
+
+<script>
+  const periods = {
+    period2: [
+      { name: "Group 1", url: "#", hasLink: false },
+      { name: "Group 2", url: "#", hasLink: false },
+      { name: "Group 3", url: "#", hasLink: false },
+      { name: "Group 4", url: "#", hasLink: false },
+      { name: "Group 5", url: "#", hasLink: false },
+      { name: "Group 6", url: "#", hasLink: false },
+      { name: "Group 7", url: "#", hasLink: false },
+      { name: "Group 8", url: "#", hasLink: false },
+    ],
+    period6: [
+      { name: "Group 1", url: "#", hasLink: false },
+      { name: "Group 2", url: "#", hasLink: false },
+      { name: "Group 3", url: "#", hasLink: false },
+      { name: "Group 4", url: "#", hasLink: false },
+      { name: "Group 5", url: "#", hasLink: false },
+      { name: "Group 6", url: "#", hasLink: false },
+    ],
+    period7: [
+      { name: "Group 1", url: "#", hasLink: false },
+      { name: "Group 2", url: "#", hasLink: false },
+      { name: "Group 3", url: "#", hasLink: false },
+      { name: "Group 4", url: "#", hasLink: false },
+      { name: "Group 5", url: "#", hasLink: false },
+      { name: "Group 6", url: "#", hasLink: false },
+      { name: "Group 7", url: "#", hasLink: false },
+      { name: "Group 8", url: "#", hasLink: false },
+    ],
+  };
+
+  const icons = ["🎮","🕹️","👾","🐝","⚡","🛸","🔷","🌀","🎯","🧩","🚀","💠"];
+
+  function buildNodes(containerId, groups, periodLabel) {
+    const container = document.getElementById(containerId);
+    groups.forEach((g, i) => {
+      const a = document.createElement('a');
+      a.href = g.hasLink ? g.url : '#';
+      if (g.hasLink) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      a.className = 'node' + (g.hasLink ? '' : ' node-placeholder');
+      a.title = g.hasLink ? `Visit ${g.name}` : 'Coming soon';
+      a.innerHTML = `
+        <div class="sweep"></div>
+        <div class="node-icon">${icons[i % icons.length]}</div>
+        <div class="node-name">${g.name}</div>
+        <div class="node-label">${periodLabel} · Group ${i+1}</div>
+        <div class="node-status">${g.hasLink ? 'LIVE PROJECT' : 'LINK PENDING'}</div>
+      `;
+      if (!g.hasLink) a.addEventListener('click', e => e.preventDefault());
+      container.appendChild(a);
+    });
+  }
+
+  buildNodes('period2', periods.period2, '2nd Period');
+  buildNodes('period6', periods.period6, '6th Period');
+  buildNodes('period7', periods.period7, '7th Period');
+</script>
+</body>
+</html>
